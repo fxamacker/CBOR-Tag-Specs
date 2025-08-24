@@ -1,11 +1,11 @@
-# CBOR Tag for Nanoseconds Since Unix Epoch UTC for Int64
+# CBOR Tag for Nanoseconds Since Unix Epoch UTC for int64_t
 
 This document specifies a [CBOR](https://www.rfc-editor.org/info/std94)[1] tag for nanoseconds since Unix Epoch UTC as an integer in the range -2⁶³..2⁶³−1 inclusive.  This allows compact and lossless encoding of nanoseconds that can represent POSIX time[2] up to April 11, 2262.
 
 ```
 Tag: TBD
 Data item: unsigned integer or negative integer
-Semantics: Nanoseconds Since Unix Epoch UTC for Int64
+Semantics: Nanoseconds Since Unix Epoch UTC for int64_t
 Point of contact: Faye Amacker <faye.github@gmail.com>
 Description of semantics: https://github.com/fxamacker/CBOR-Tag-Specs/blob/master/TimeUnixNanoInt64.md
 ```
@@ -23,6 +23,8 @@ The maximum nanoseconds elapsed (2⁶³−1) represents the time 2262-04-11T23:4
 Equivalent seconds elapsed since the epoch are interpreted according to RFC 8949 for CBOR tag 1, so:
 - Nonnegative seconds are interpreted according to POSIX time for seconds elapsed since the epoch.
 - Negative seconds may be interpreted according to application requirements because it isn't defined by POSIX time. See "Negative Integer Values" section below for more details.
+
+The negative nanoseconds elapsed (-2⁶³) is interpreted as 1677-09-21T00:12:43.145224192Z by the C++ and Go standard libraries (C++20, C++23, Go 1.24, and Go 1.25).
 
 Application protocols should specify whether or not negative values are allowed.  Generic CBOR codecs may want to provide a choice for users to allow or forbid negative values.  
 
@@ -58,7 +60,7 @@ Like CBOR tag 1, nonnegative seconds elapsed since the epoch are interpreted acc
 
 As noted by [Section 3.4.2 of RFC 8949](https://www.rfc-editor.org/rfc/rfc8949.html#section-3.4.2-4) (CBOR), there is no universal standard for UTC count-of-seconds time before January 1, 1970 UTC, so negative values may be interpreted by application requirements.  When application requirements are not defined, negative values may be interpreted by the standard library of the programming language used.
 
-As just one example, a generic CBOR codec implemented in Go may interpret the minimum nanoseconds (-2⁶³) as the time 1677-09-21T00:12:43.145224192Z, since that is the interpretation provided by the Go standard library.
+For example, a generic CBOR codec implemented in C++ or Go may interpret the minimum nanoseconds (-2⁶³) as the time 1677-09-21T00:12:43.145224192Z, since that is the interpretation provided by the C++ and Go standard libraries.
 
 ## Rationale (remove this section in final version)
 
@@ -70,7 +72,7 @@ When serializing nanosecond precision time values, generic CBOR codecs are curre
 
 Applications and generic CBOR codecs need a compact and lossless encoding of time with nanosecond precision, where:
 - the total encoded size is competive with non-CBOR binary formats that emit ~10 bytes
-- the allowed integer values must be in the range of int64_t (C99)
+- the allowed integer values is in the range of int64_t (C99)
 - the tag supports small code size and fast speed
 
 The int64_t range of nanoseconds can represent time from September 1677 to April 2262.  Applications that need a different time range are able to use CBOR tags defined by RFC 9581.
