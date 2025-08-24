@@ -18,13 +18,15 @@ The integer value representing nanoseconds must be in the range of -2⁶³..2⁶
 - Unsigned integer must be in the range 0..2⁶³−1 inclusive.
 - Negative integer must be in the range -2⁶³..-1 inclusive.
 
-The maximum nanoseconds elapsed (2⁶³−1) represents the time 2262-04-11T23:47:16.854775807Z UTC.
-
 Equivalent seconds elapsed since the epoch are interpreted according to RFC 8949 for CBOR tag 1, so:
 - Nonnegative seconds are interpreted according to POSIX time for seconds elapsed since the epoch.
 - Negative seconds may be interpreted according to application requirements because it isn't defined by POSIX time. See "Negative Integer Values" section below for more details.
 
-The negative nanoseconds elapsed (-2⁶³) is interpreted as 1677-09-21T00:12:43.145224192Z by the C++ and Go standard libraries (C++20, C++23, Go 1.24, and Go 1.25).
+The maximum nanoseconds elapsed (2⁶³−1) represents the time 2262-04-11T23:47:16.854775807Z.
+
+POSIX time is used, so 1483228800000000000 nanoseconds represents 2017-01-01T00:00Z.
+
+The negative nanoseconds elapsed (-2⁶³) is interpreted as 1677-09-21T00:12:43.145224192Z by the C++ and Go standard libraries (e.g., C++20, C++23, Go 1.24, and Go 1.25).
 
 Application protocols should specify whether or not negative values are allowed.  Generic CBOR codecs may want to provide a choice for users to allow or forbid negative values.  
 
@@ -64,7 +66,7 @@ For example, a generic CBOR codec implemented in C++ or Go may interpret the min
 
 ## Rationale (remove this section in final version)
 
-Users of a generic CBOR codec[4] have been requesting a compact and lossless encoding of nanosecond precision time in UTC.  And they want the encoding to be compatible between different generic CBOR codecs on different platforms.  With some exceptions, users prefer not to use the codec's extension API to integrate their own handling of CBOR tags.
+Users of a generic CBOR codec[4] have been requesting a compact and lossless encoding of nanosecond precision time (without encoding local time zone).  And they want the encoding to be compatible between different generic CBOR codecs on different platforms.  With some exceptions, users prefer not to use the codec's extension API to integrate their own handling of CBOR tags.
 
 In addition, third-party projects evaluate binary serialization formats by using generic codecs to compare serialization speed, memory use, and encoded size.
 
